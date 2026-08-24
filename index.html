@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Super Tech | Premium Tech Store</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- =========================================================
+       AUTHENTICATION SCREEN
+       ========================================================= -->
+
+  <div class="auth-wrapper" id="auth-screen">
+
+    <div class="auth-card">
+
+      <!-- Brand Logo -->
+      <div class="brand-logo mb-20">
+        <i class="fa-solid fa-microchip icon"></i>
+        <span>SUPER<span class="highlight">TECH</span></span>
+      </div>
+
+      <!-- Authentication Tabs -->
+      <div class="auth-tabs">
+        <button
+          class="tab-btn active"
+          id="login-tab"
+          onclick="switchAuthMode('login')"
+        >
+          Login
+        </button>
+
+        <button
+          class="tab-btn"
+          id="signup-tab"
+          onclick="switchAuthMode('signup')"
+        >
+          Sign Up
+        </button>
+      </div>
+
+      <!-- Authentication Form -->
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+
+        <!-- Full Name -->
+        <div class="form-group" id="name-group" style="display: none;">
+          <label>Full Name</label>
+          <input
+            type="text"
+            id="auth-name"
+            placeholder="John Doe"
+          >
+        </div>
+
+        <!-- Email Address -->
+        <div class="form-group">
+          <label>Email Address</label>
+          <input
+            type="email"
+            id="auth-email"
+            placeholder="user@supertech.com"
+            required
+          >
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            id="auth-password"
+            placeholder="••••••••"
+            required
+          >
+        </div>
+
+        <!-- Authentication Submit Button -->
+        <button
+          type="submit"
+          class="auth-submit-btn"
+          id="auth-btn-text"
+        >
+          Login to Store
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       MAIN STORE APPLICATION
+       Hidden Until User Login
+       ========================================================= -->
+
+  <div id="store-app" style="display: none;">
+
+    <!-- =======================================================
+         TOP ANNOUNCEMENT BAR
+         ======================================================= -->
+
+    <div class="top-bar">
+      <span>
+        ⚡ WELCOME TO SUPER TECH | FREE EXPRESS SHIPPING OVER $100
+      </span>
+    </div>
+
+
+    <!-- =======================================================
+         MAIN HEADER / NAVIGATION
+         ======================================================= -->
+
+    <header class="main-header">
+
+      <div class="nav-container">
+
+        <!-- Brand Logo -->
+        <div class="brand-logo">
+          <i class="fa-solid fa-microchip icon"></i>
+          <span>SUPER<span class="highlight">TECH</span></span>
+        </div>
+
+        <!-- Product Search -->
+        <div class="search-wrapper">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search products..."
+            onkeyup="filterProducts()"
+          >
+
+          <button>
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+
+          <!-- Active User -->
+          <div class="user-badge">
+            <i class="fa-solid fa-user-check"></i>
+
+            <span id="active-user-name">
+              User
+            </span>
+
+            <button
+              class="logout-link"
+              onclick="handleLogout()"
+            >
+              (Logout)
+            </button>
+          </div>
+
+          <!-- Shopping Cart -->
+          <div
+            class="cart-trigger"
+            onclick="toggleCartDrawer()"
+          >
+            <i class="fa-solid fa-bag-shopping"></i>
+
+            <span
+              class="badge"
+              id="cart-count"
+            >
+              0
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =======================================================
+         HERO SECTION
+         ======================================================= -->
+
+    <div class="hero-section">
+
+      <div class="hero-content">
+
+        <span class="hero-tag">
+          NEXT-GEN TECH GEAR
+        </span>
+
+        <h1>
+          Engineered For Performance
+        </h1>
+
+        <p>
+          Premium setup gear, mechanical keyboards, and gaming audio accessories.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- =======================================================
+         MAIN SHOP VIEW
+         ======================================================= -->
+
+    <main
+      class="main-layout container"
+      id="shop-view"
+    >
+
+      <!-- Product Categories Sidebar -->
+      <aside class="sidebar-filters">
+
+        <h3>
+          Categories
+        </h3>
+
+        <ul class="category-list">
+
+          <li
+            class="active"
+            onclick="filterCategory('all', this)"
+          >
+            All Products
+          </li>
+
+          <li onclick="filterCategory('Audio', this)">
+            Audio & Gaming
+          </li>
+
+          <li onclick="filterCategory('Peripherals', this)">
+            Keyboards & Mice
+          </li>
+
+          <li onclick="filterCategory('Accessories', this)">
+            Power & Chargers
+          </li>
+
+        </ul>
+
+      </aside>
+
+
+      <!-- Products Section -->
+      <section class="products-section">
+
+        <div class="section-header">
+          <h2>
+            Available Products
+          </h2>
+        </div>
+
+        <!-- Products Rendered Dynamically -->
+        <div
+          class="products-grid"
+          id="products-grid"
+        ></div>
+
+      </section>
+
+    </main>
+
+
+    <!-- =======================================================
+         CHECKOUT SECTION
+         ======================================================= -->
+
+    <section
+      class="container checkout-container"
+      id="checkout-view"
+      style="display: none;"
+    >
+
+      <!-- Back to Shopping -->
+      <button
+        class="back-btn"
+        onclick="showShopView()"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Shopping
+      </button>
+
+      <h2>
+        Complete Your Purchase
+      </h2>
+
+
+      <div class="checkout-grid">
+
+        <!-- Checkout Form -->
+        <div class="checkout-form-box">
+
+          <h3>
+            Shipping & Payment Details
+          </h3>
+
+          <form onsubmit="processFinalOrder(event)">
+
+            <!-- Customer Name -->
+            <div class="form-row">
+
+              <input
+                type="text"
+                placeholder="First Name"
+                required
+              >
+
+              <input
+                type="text"
+                placeholder="Last Name"
+                required
+              >
+
+            </div>
+
+            <!-- Street Address -->
+            <input
+              type="text"
+              placeholder="Street Address"
+              required
+            >
+
+            <!-- City & Postal Code -->
+            <div class="form-row">
+
+              <input
+                type="text"
+                placeholder="City"
+                required
+              >
+
+              <input
+                type="text"
+                placeholder="Postal Code"
+                required
+              >
+
+            </div>
+
+            <!-- Card Payment -->
+            <h4>
+              Card Payment
+            </h4>
+
+            <input
+              type="text"
+              placeholder="Card Number (XXXX-XXXX-XXXX-XXXX)"
+              required
+              maxlength="19"
+            >
+
+            <!-- Card Expiry & CVV -->
+            <div class="form-row">
+
+              <input
+                type="text"
+                placeholder="MM/YY"
+                required
+                maxlength="5"
+              >
+
+              <input
+                type="text"
+                placeholder="CVV"
+                required
+                maxlength="3"
+              >
+
+            </div>
+
+            <!-- Place Order -->
+            <button
+              type="submit"
+              class="place-order-btn"
+            >
+              Pay Now & Place Order
+            </button>
+
+          </form>
+
+        </div>
+
+
+        <!-- Order Summary -->
+        <div class="order-summary-box">
+
+          <h3>
+            Order Summary
+          </h3>
+
+          <!-- Checkout Products -->
+          <div id="checkout-summary-list"></div>
+
+          <hr class="divider">
+
+          <!-- Subtotal -->
+          <div class="summary-line">
+            <span>
+              Subtotal
+            </span>
+
+            <span id="summary-subtotal">
+              $0.00
+            </span>
+          </div>
+
+          <!-- Shipping -->
+          <div class="summary-line">
+            <span>
+              Shipping
+            </span>
+
+            <span>
+              FREE
+            </span>
+          </div>
+
+          <!-- Total -->
+          <div class="summary-line total-line">
+            <span>
+              Total Payable
+            </span>
+
+            <span id="summary-total">
+              $0.00
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         SHOPPING CART DRAWER
+         ======================================================= -->
+
+    <div
+      class="cart-drawer"
+      id="cart-drawer"
+    >
+
+      <!-- Cart Header -->
+      <div class="drawer-header">
+
+        <h3>
+          Shopping Cart
+        </h3>
+
+        <span
+          class="close-drawer"
+          onclick="toggleCartDrawer()"
+        >
+          &times;
+        </span>
+
+      </div>
+
+
+      <!-- Cart Items -->
+      <div
+        class="drawer-body"
+        id="cart-items"
+      ></div>
+
+
+      <!-- Cart Footer -->
+      <div class="drawer-footer">
+
+        <!-- Cart Subtotal -->
+        <div class="subtotal">
+
+          <span>
+            Subtotal:
+          </span>
+
+          <strong id="cart-total">
+            $0.00
+          </strong>
+
+        </div>
+
+        <!-- Checkout Button -->
+        <button
+          class="checkout-btn"
+          onclick="goToCheckout()"
+        >
+          Proceed To Checkout
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- =======================================================
+         FOOTER
+         ======================================================= -->
+
+    <footer class="site-footer">
+
+      <div class="footer-bottom">
+        <p>
+          &copy; 2026 SUPER TECH. All Rights Reserved.
+        </p>
+      </div>
+
+    </footer>
+
+  </div>
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+       ========================================================= -->
+
+  <script src="app.js"></script>
+
+</body>
+
+</html>
